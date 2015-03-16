@@ -1,7 +1,7 @@
 {
   "name": "wav-encoder",
   "description": "isomorphic wav data encoder",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "authors": [
     "Nao Yonamine <mohayonao@gmail.com>"
   ],
