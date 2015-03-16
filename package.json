@@ -1,0 +1,27 @@
+{
+  "name": "wav-encoder",
+  "description": "isomorphic wav data encoder",
+  "version": "0.0.0",
+  "author": "Nao Yonamine <mohayonao@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/mohayonao/wav-encoder/issues"
+  },
+  "files": [
+    "package.json",
+    "README.md",
+    "lib"
+  ],
+  "homepage": "https://github.com/mohayonao/wav-encoder/",
+  "keywords": [
+    "decode",
+    "encode",
+    "isomorphic",
+    "audio"
+  ],
+  "licenses": "MIT",
+  "main": "./lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mohayonao/wav-encoder.git"
+  }
+}
