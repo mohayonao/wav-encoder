@@ -1,0 +1,27 @@
+{
+  "name": "wav-encoder",
+  "description": "isomorphic wav data encoder",
+  "version": "0.0.1",
+  "authors": [
+    "Nao Yonamine <mohayonao@gmail.com>"
+  ],
+  "homepage": "https://github.com/mohayonao/wav-encoder",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "src"
+  ],
+  "keywords": [
+    "encode",
+    "isomorphic",
+    "wav"
+  ],
+  "license": "MIT",
+  "main": "build/wav-encoder.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mohayonao/wav-encoder.git"
+  }
+}
