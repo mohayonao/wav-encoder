@@ -1,1 +1,3 @@
-module.exports = require("./encoder");
+import Encoder from "./encoder";
+
+export default Encoder;
