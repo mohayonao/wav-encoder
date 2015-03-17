@@ -15,15 +15,19 @@ function encoder() {
     switch (e.data.type) {
       case "encode":
         self.encode(e.data.audioData, e.data.format).then(function(buffer) {
-          self.postMessage({
+          var data = {
             type: "encoded",
+            callbackId: e.data.callbackId,
             buffer: buffer
-          }, [ buffer ]);
-        }).catch(function(err) {
-          self.postMessage({
+          };
+          self.postMessage(data, [ buffer ]);
+        }, function(err) {
+          var data = {
             type: "error",
+            callbackId: e.data.callbackId,
             message: err.message
-          });
+          };
+          self.postMessage(data);
         });
         break;
     }
