@@ -4,13 +4,6 @@ import InlineWorker from "inline-worker";
 import encoder from "./encoder-worker";
 
 export default class Encoder {
-  static canProcess(format) {
-    if (typeof format === "string") {
-      return /\bwav$/.test(format);
-    }
-    return false;
-  }
-
   encode(audioData) {
     return new Promise((resolve) => {
       let worker = new InlineWorker(encoder, encoder.self);
@@ -21,7 +14,11 @@ export default class Encoder {
         }
       };
 
-      let trasferable = audioData.toTransferable();
+      let numberOfChannels = audioData.channelData.length;
+      let length = audioData.channelData[0].length;
+      let sampleRate = audioData.sampleRate;
+      let buffers = audioData.channelData.map(data => data.buffer);
+      let trasferable = { numberOfChannels, length, sampleRate, buffers };
 
       worker.postMessage({
         type: "encode",

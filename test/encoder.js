@@ -25,10 +25,13 @@ describe("Encoder", () => {
     it("works", () => {
       let encoder = new Encoder();
 
-      let audioData = new AudioData(2, 2, 44100);
-
-      audioData.channelData[0].set([ -0.5, 1.5 ]);
-      audioData.channelData[1].set([ -1.5, 0.5 ]);
+      let audioData = {
+        sampleRate: 44100,
+        channelData: [
+          new Float32Array([ -0.5, 1.5 ]),
+          new Float32Array([ -1.5, 0.5 ]),
+        ]
+      };
 
       return encoder.encode(audioData).then((buffer) => {
         let actual = new Uint8Array(buffer);
