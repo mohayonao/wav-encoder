@@ -1,5 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WavEncoder = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
+
 /* jshint esnext: false */
 
 /**
@@ -16,15 +17,19 @@ function encoder() {
     switch (e.data.type) {
       case "encode":
         self.encode(e.data.audioData, e.data.format).then(function (buffer) {
-          self.postMessage({
+          var data = {
             type: "encoded",
+            callbackId: e.data.callbackId,
             buffer: buffer
-          }, [buffer]);
-        })["catch"](function (err) {
-          self.postMessage({
+          };
+          self.postMessage(data, [buffer]);
+        }, function (err) {
+          var data = {
             type: "error",
+            callbackId: e.data.callbackId,
             message: err.message
-          });
+          };
+          self.postMessage(data);
         });
         break;
     }
@@ -178,22 +183,43 @@ var encoder = _interopRequire(require("./encoder-worker"));
 
 var Encoder = (function () {
   function Encoder() {
+    var _this = this;
+
+    var format = arguments[0] === undefined ? {} : arguments[0];
+
     _classCallCheck(this, Encoder);
+
+    this.format = {
+      floatingPoint: !!format.floatingPoint,
+      bitDepth: format.bitDepth | 0 || 16 };
+    this._worker = new InlineWorker(encoder, encoder.self);
+    this._worker.onmessage = function (e) {
+      var callback = _this._callbacks[e.data.callbackId];
+
+      if (callback) {
+        if (e.data.type === "encoded") {
+          callback.resolve(e.data.buffer);
+        } else {
+          callback.reject(new Error(e.data.message));
+        }
+      }
+
+      _this._callbacks[e.data.callbackId] = null;
+    };
+    this._callbacks = [];
   }
 
   _createClass(Encoder, {
     encode: {
       value: function encode(audioData) {
-        var format = arguments[1] === undefined ? {} : arguments[1];
+        var _this = this;
 
-        return new Promise(function (resolve) {
-          var worker = new InlineWorker(encoder, encoder.self);
+        var format = arguments[1] === undefined ? this.format : arguments[1];
 
-          worker.onmessage = function (e) {
-            if (e.data.type === "encoded") {
-              resolve(e.data.buffer);
-            }
-          };
+        return new Promise(function (resolve, reject) {
+          var callbackId = _this._callbacks.length;
+
+          _this._callbacks.push({ resolve: resolve, reject: reject });
 
           var numberOfChannels = audioData.channelData.length;
           var length = audioData.channelData[0].length;
@@ -201,13 +227,12 @@ var Encoder = (function () {
           var buffers = audioData.channelData.map(function (data) {
             return data.buffer;
           });
-          var trasferable = { numberOfChannels: numberOfChannels, length: length, sampleRate: sampleRate, buffers: buffers };
 
-          worker.postMessage({
-            type: "encode",
-            audioData: trasferable,
-            format: format
-          }, trasferable.buffers);
+          audioData = { numberOfChannels: numberOfChannels, length: length, sampleRate: sampleRate, buffers: buffers };
+
+          _this._worker.postMessage({
+            type: "encode", audioData: audioData, format: format, callbackId: callbackId
+          }, audioData.buffers);
         });
       }
     }
