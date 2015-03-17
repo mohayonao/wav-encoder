@@ -51,7 +51,7 @@ describe("AudioData", () => {
       audioData.channelData[0].set([ -0.5, 1.5 ]);
       audioData.channelData[1].set([ -1.5, 0.5 ]);
 
-      return AudioData.encode(audioData, "wav").then((buffer) => {
+      return AudioData.encode(audioData).then((buffer) => {
         let actual = new Uint8Array(buffer);
 
         assert.deepEqual(actual, expected);

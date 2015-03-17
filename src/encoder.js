@@ -4,7 +4,7 @@ import InlineWorker from "inline-worker";
 import encoder from "./encoder-worker";
 
 export default class Encoder {
-  encode(audioData) {
+  encode(audioData, format = {}) {
     return new Promise((resolve) => {
       let worker = new InlineWorker(encoder, encoder.self);
 
@@ -22,7 +22,8 @@ export default class Encoder {
 
       worker.postMessage({
         type: "encode",
-        audioData: trasferable
+        audioData: trasferable,
+        format: format
       }, trasferable.buffers);
     });
   }
