@@ -27,7 +27,10 @@ downloads:
 
 ## API
 ### WavEncoder
-- `constructor()`
+- `constructor([format: object])`
+  - format
+    - `bitDepth: number = 16`
+    - `floatingPoint: boolean = false`
 
 #### Instance methods
 - `encode(audioData: object, [format: object]): Promise<ArrayBuffer>`
