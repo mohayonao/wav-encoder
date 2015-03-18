@@ -21,7 +21,42 @@ let expected = new Uint8Array([
 ]);
 
 describe("Encoder", () => {
-  describe("#encode(audioData: AudioData): Promise<ArrayBuffer>", () => {
+  describe(".canProcess(format: stirng): boolean", () => {
+    it("works", () => {
+      assert(Encoder.canProcess("wav") === true);
+      assert(Encoder.canProcess("mp3") === false);
+      assert(Encoder.canProcess({ type: "wav" }) === true);
+      assert(Encoder.canProcess({ type: "mp3" }) === false);
+    });
+  });
+  describe(".encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
+    it("works", () => {
+      let audioData = {
+        sampleRate: 44100,
+        channelData: [
+          new Float32Array([ -0.5, 1.5 ]),
+          new Float32Array([ -1.5, 0.5 ]),
+        ]
+      };
+
+      return Encoder.encode(audioData).then((buffer) => {
+        let actual = new Uint8Array(buffer);
+
+        assert.deepEqual(actual, expected);
+      });
+    });
+  });
+  describe("#canProcess(format: stirng): boolean", () => {
+    it("works", () => {
+      let encoder = new Encoder();
+
+      assert(encoder.canProcess("wav") === true);
+      assert(encoder.canProcess("mp3") === false);
+      assert(encoder.canProcess({ type: "wav" }) === true);
+      assert(encoder.canProcess({ type: "mp3" }) === false);
+    });
+  });
+  describe("#encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
     it("works", () => {
       let encoder = new Encoder();
 

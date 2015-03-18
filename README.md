@@ -32,14 +32,19 @@ downloads:
     - `bitDepth: number = 16`
     - `floatingPoint: boolean = false`
 
-#### Instance methods
+#### Class methods
+- `canProcess(format: string): boolean`
 - `encode(audioData: object, [format: object]): Promise<ArrayBuffer>`
   - audioData
     - `sampleRate: number`
     - `channelData: Float32Array[]`
-  - format
-    - `bitDepth: number = 16`
-    - `floatingPoint: boolean = false`
+
+#### Instance methods
+- `canProcess(format: string): boolean`
+- `encode(audioData: object, [format: object]): Promise<ArrayBuffer>`
+  - audioData
+    - `sampleRate: number`
+    - `channelData: Float32Array[]`
 
 ## Usage
 
@@ -61,7 +66,7 @@ function arrayBufferToBuffer(buffer) {
   return new Buffer(new Uint8Array(buffer));
 }
 
-new WavDecoder().encode(audioData).then(function(buffer) {
+WavDecoder.encode(audioData).then(function(buffer) {
   fs.writeFileSync("foobar.wav", arrayBufferToBuffer(buffer));
 });
 ```
@@ -85,7 +90,7 @@ function arrayBufferToBase64(buffer) {
   return btoa([].slice.call(new Uint8Array(buffer)).map(String.fromCharCode).join(""));
 }
 
-new WavEncoder().encode(audioData).then(function(buffer) {
+WavEncoder.encode(audioData).then(function(buffer) {
   new Audio("data:audio/wav;base64," + arrayBufferToBase64(buffer)).play();
 });
 ```
