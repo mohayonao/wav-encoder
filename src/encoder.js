@@ -4,6 +4,10 @@ import InlineWorker from "inline-worker";
 import encoder from "./encoder-worker";
 
 export default class Encoder {
+  static canProcess(format) {
+    return format === "wav" || !!(format && format.type === "wav");
+  }
+
   constructor(format = {}) {
     this.format = {
       floatingPoint: !!(format.floatingPoint),
@@ -24,6 +28,10 @@ export default class Encoder {
       this._callbacks[e.data.callbackId] = null;
     };
     this._callbacks = [];
+  }
+
+  canProcess(format) {
+    return Encoder.canProcess(format);
   }
 
   encode(audioData, format = this.format) {
