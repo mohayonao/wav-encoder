@@ -29,6 +29,23 @@ describe("Encoder", () => {
       assert(Encoder.canProcess({ type: "mp3" }) === false);
     });
   });
+  describe(".encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
+    it("works", () => {
+      let audioData = {
+        sampleRate: 44100,
+        channelData: [
+          new Float32Array([ -0.5, 1.5 ]),
+          new Float32Array([ -1.5, 0.5 ]),
+        ]
+      };
+
+      return Encoder.encode(audioData).then((buffer) => {
+        let actual = new Uint8Array(buffer);
+
+        assert.deepEqual(actual, expected);
+      });
+    });
+  });
   describe("#canProcess(format: stirng): boolean", () => {
     it("works", () => {
       let encoder = new Encoder();
@@ -39,7 +56,7 @@ describe("Encoder", () => {
       assert(encoder.canProcess({ type: "mp3" }) === false);
     });
   });
-  describe("#encode(audioData: AudioData): Promise<ArrayBuffer>", () => {
+  describe("#encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
     it("works", () => {
       let encoder = new Encoder();
 

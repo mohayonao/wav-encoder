@@ -8,6 +8,10 @@ export default class Encoder {
     return format === "wav" || !!(format && format.type === "wav");
   }
 
+  static encode(audioData, format) {
+    return new Encoder(format).encode(audioData);
+  }
+
   constructor(format = {}) {
     this.format = {
       floatingPoint: !!(format.floatingPoint),
