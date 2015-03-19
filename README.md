@@ -33,14 +33,14 @@ downloads:
     - `floatingPoint: boolean = false`
 
 #### Class methods
-- `canProcess(format: string): boolean`
+- `canProcess(format: object): string`
 - `encode(audioData: object, [format: object]): Promise<ArrayBuffer>`
   - audioData
     - `sampleRate: number`
     - `channelData: Float32Array[]`
 
 #### Instance methods
-- `canProcess(format: string): boolean`
+- `canProcess(format: object): string`
 - `encode(audioData: object, [format: object]): Promise<ArrayBuffer>`
   - audioData
     - `sampleRate: number`
