@@ -215,11 +215,12 @@ var Encoder = (function () {
       }
     },
     encode: {
-      value: function encode(audioData) {
+      value: function encode(audioData, format) {
         var _this = this;
 
-        var format = arguments[1] === undefined ? this.format : arguments[1];
-
+        if (format == null || typeof format !== "object") {
+          format = this.format;
+        }
         return new Promise(function (resolve, reject) {
           var callbackId = _this._callbacks.length;
 
