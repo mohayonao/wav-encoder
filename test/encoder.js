@@ -23,10 +23,10 @@ let expected = new Uint8Array([
 describe("Encoder", () => {
   describe(".canProcess(format: stirng): boolean", () => {
     it("works", () => {
-      assert(Encoder.canProcess("wav") === true);
-      assert(Encoder.canProcess("mp3") === false);
-      assert(Encoder.canProcess({ type: "wav" }) === true);
-      assert(Encoder.canProcess({ type: "mp3" }) === false);
+      assert(Encoder.canProcess("wav") === "maybe");
+      assert(Encoder.canProcess("mp3") === "");
+      assert(Encoder.canProcess({ type: "wav" }) === "maybe");
+      assert(Encoder.canProcess({ type: "mp3" }) === "");
     });
   });
   describe(".encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
@@ -50,10 +50,10 @@ describe("Encoder", () => {
     it("works", () => {
       let encoder = new Encoder();
 
-      assert(encoder.canProcess("wav") === true);
-      assert(encoder.canProcess("mp3") === false);
-      assert(encoder.canProcess({ type: "wav" }) === true);
-      assert(encoder.canProcess({ type: "mp3" }) === false);
+      assert(encoder.canProcess("wav") === "maybe");
+      assert(encoder.canProcess("mp3") === "");
+      assert(encoder.canProcess({ type: "wav" }) === "maybe");
+      assert(encoder.canProcess({ type: "mp3" }) === "");
     });
   });
   describe("#encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
