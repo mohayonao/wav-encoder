@@ -41,7 +41,10 @@ export default class Encoder {
     return Encoder.canProcess(format);
   }
 
-  encode(audioData, format = this.format) {
+  encode(audioData, format) {
+    if (format == null || typeof format !== "object") {
+      format = this.format;
+    }
     return new Promise((resolve, reject) => {
       let callbackId = this._callbacks.length;
 
