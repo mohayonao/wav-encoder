@@ -39,7 +39,7 @@ describe("Encoder", () => {
         ]
       };
 
-      return Encoder.encode(audioData).then((buffer) => {
+      return Encoder.encode(audioData, "wav").then((buffer) => {
         let actual = new Uint8Array(buffer);
 
         assert.deepEqual(actual, expected);
@@ -68,7 +68,7 @@ describe("Encoder", () => {
         ]
       };
 
-      return encoder.encode(audioData).then((buffer) => {
+      return encoder.encode(audioData, "wav").then((buffer) => {
         let actual = new Uint8Array(buffer);
 
         assert.deepEqual(actual, expected);
