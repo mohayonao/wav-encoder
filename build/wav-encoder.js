@@ -243,7 +243,10 @@ var Encoder = (function () {
   }, {
     canProcess: {
       value: function canProcess(format) {
-        return format === "wav" || !!(format && format.type === "wav");
+        if (format && (format === "wav" || format.type === "wav")) {
+          return "maybe";
+        }
+        return "";
       }
     },
     encode: {
