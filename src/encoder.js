@@ -2,13 +2,6 @@ import InlineWorker from "inline-worker";
 import encoder from "./encoder-worker";
 
 export default class Encoder {
-  static canProcess(format) {
-    if (format && (format === "wav" || format.type === "wav")) {
-      return "maybe";
-    }
-    return "";
-  }
-
   static encode(audioData, format) {
     return new Encoder(format).encode(audioData);
   }
@@ -33,10 +26,6 @@ export default class Encoder {
       this._callbacks[e.data.callbackId] = null;
     };
     this._callbacks = [];
-  }
-
-  canProcess(format) {
-    return Encoder.canProcess(format);
   }
 
   encode(audioData, format) {

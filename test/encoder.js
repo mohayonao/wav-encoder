@@ -1,5 +1,4 @@
 import assert from "power-assert";
-import AudioData from "audiodata";
 import Encoder from "../src/encoder";
 
 let expected = new Uint8Array([
@@ -19,14 +18,6 @@ let expected = new Uint8Array([
 ]);
 
 describe("Encoder", function() {
-  describe(".canProcess(format: stirng): boolean", function() {
-    it("works", function() {
-      assert(Encoder.canProcess("wav") === "maybe");
-      assert(Encoder.canProcess("mp3") === "");
-      assert(Encoder.canProcess({ type: "wav" }) === "maybe");
-      assert(Encoder.canProcess({ type: "mp3" }) === "");
-    });
-  });
   describe(".encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", function() {
     it("works", function() {
       let audioData = {
@@ -44,16 +35,6 @@ describe("Encoder", function() {
       });
     });
   });
-  describe("#canProcess(format: stirng): boolean", function() {
-    it("works", function() {
-      let encoder = new Encoder();
-
-      assert(encoder.canProcess("wav") === "maybe");
-      assert(encoder.canProcess("mp3") === "");
-      assert(encoder.canProcess({ type: "wav" }) === "maybe");
-      assert(encoder.canProcess({ type: "mp3" }) === "");
-    });
-  });
   describe("#encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", function() {
     it("works", function() {
       let encoder = new Encoder();
@@ -67,24 +48,6 @@ describe("Encoder", function() {
       };
 
       return encoder.encode(audioData, "wav").then((buffer) => {
-        let actual = new Uint8Array(buffer);
-
-        assert.deepEqual(actual, expected);
-      });
-    });
-  });
-});
-describe("AudioData", function() {
-  describe(".encode(audioData: AudioData): Promise<ArrayBuffer>", function() {
-    it("works", function() {
-      AudioData.install(Encoder);
-
-      let audioData = new AudioData(2, 2, 44100);
-
-      audioData.channelData[0].set([ -0.5, 1.5 ]);
-      audioData.channelData[1].set([ -1.5, 0.5 ]);
-
-      return AudioData.encode(audioData).then((buffer) => {
         let actual = new Uint8Array(buffer);
 
         assert.deepEqual(actual, expected);
