@@ -1,6 +1,6 @@
 {
   "ignore": [
     "node_modules",
-    "src/encoder-worker.js"
+    "src/EncoderWorker.js"
   ]
 }

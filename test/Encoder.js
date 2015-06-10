@@ -1,5 +1,5 @@
 import assert from "power-assert";
-import Encoder from "../src/encoder";
+import Encoder from "../src/Encoder";
 
 let expected = new Uint8Array([
   0x52, 0x49, 0x46, 0x46, // "RIFF"

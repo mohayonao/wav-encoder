@@ -1,5 +1,5 @@
 import InlineWorker from "inline-worker";
-import encoder from "./encoder-worker";
+import EncoderWorker from "./EncoderWorker";
 
 export default class Encoder {
   static encode(audioData, format) {
@@ -11,7 +11,7 @@ export default class Encoder {
       floatingPoint: !!(format.floatingPoint),
       bitDepth: (format.bitDepth|0) || 16,
     };
-    this._worker = new InlineWorker(encoder, encoder.self);
+    this._worker = new InlineWorker(EncoderWorker, EncoderWorker.self);
     this._worker.onmessage = (e) => {
       let callback = this._callbacks[e.data.callbackId];
 
