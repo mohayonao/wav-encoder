@@ -1,13 +1,3 @@
-"use strict";
-/* jshint esnext: false */
-
-/**
-  CAUTION!!!!
-  This file is used in WebWorker.
-  So, must write with ES5, not use ES6.
-  You need attention not to be traspiled by babel.
-*/
-
 var self = {};
 
 function encoder() {
@@ -18,14 +8,14 @@ function encoder() {
           var data = {
             type: "encoded",
             callbackId: e.data.callbackId,
-            buffer: buffer
+            buffer: buffer,
           };
           self.postMessage(data, [ buffer ]);
         }, function(err) {
           var data = {
             type: "error",
             callbackId: e.data.callbackId,
-            message: err.message
+            message: err.message,
           };
           self.postMessage(data);
         });

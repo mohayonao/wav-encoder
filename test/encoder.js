@@ -1,5 +1,3 @@
-"use strict";
-
 import assert from "power-assert";
 import AudioData from "audiodata";
 import Encoder from "../src/encoder";
@@ -20,23 +18,23 @@ let expected = new Uint8Array([
   0xff, 0x7f, 0x00, 0x40,
 ]);
 
-describe("Encoder", () => {
-  describe(".canProcess(format: stirng): boolean", () => {
-    it("works", () => {
+describe("Encoder", function() {
+  describe(".canProcess(format: stirng): boolean", function() {
+    it("works", function() {
       assert(Encoder.canProcess("wav") === "maybe");
       assert(Encoder.canProcess("mp3") === "");
       assert(Encoder.canProcess({ type: "wav" }) === "maybe");
       assert(Encoder.canProcess({ type: "mp3" }) === "");
     });
   });
-  describe(".encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
-    it("works", () => {
+  describe(".encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", function() {
+    it("works", function() {
       let audioData = {
         sampleRate: 44100,
         channelData: [
           new Float32Array([ -0.5, 1.5 ]),
           new Float32Array([ -1.5, 0.5 ]),
-        ]
+        ],
       };
 
       return Encoder.encode(audioData, "wav").then((buffer) => {
@@ -46,8 +44,8 @@ describe("Encoder", () => {
       });
     });
   });
-  describe("#canProcess(format: stirng): boolean", () => {
-    it("works", () => {
+  describe("#canProcess(format: stirng): boolean", function() {
+    it("works", function() {
       let encoder = new Encoder();
 
       assert(encoder.canProcess("wav") === "maybe");
@@ -56,8 +54,8 @@ describe("Encoder", () => {
       assert(encoder.canProcess({ type: "mp3" }) === "");
     });
   });
-  describe("#encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", () => {
-    it("works", () => {
+  describe("#encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", function() {
+    it("works", function() {
       let encoder = new Encoder();
 
       let audioData = {
@@ -65,7 +63,7 @@ describe("Encoder", () => {
         channelData: [
           new Float32Array([ -0.5, 1.5 ]),
           new Float32Array([ -1.5, 0.5 ]),
-        ]
+        ],
       };
 
       return encoder.encode(audioData, "wav").then((buffer) => {
@@ -76,9 +74,9 @@ describe("Encoder", () => {
     });
   });
 });
-describe("AudioData", () => {
-  describe(".encode(audioData: AudioData): Promise<ArrayBuffer>", () => {
-    it("works", () => {
+describe("AudioData", function() {
+  describe(".encode(audioData: AudioData): Promise<ArrayBuffer>", function() {
+    it("works", function() {
       AudioData.install(Encoder);
 
       let audioData = new AudioData(2, 2, 44100);

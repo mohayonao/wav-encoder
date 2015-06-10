@@ -1,5 +1,3 @@
-"use stirct";
-
 import InlineWorker from "inline-worker";
 import encoder from "./encoder-worker";
 
@@ -58,7 +56,7 @@ export default class Encoder {
       audioData = { numberOfChannels, length, sampleRate, buffers };
 
       this._worker.postMessage({
-        type: "encode", audioData, format, callbackId
+        type: "encode", audioData, format, callbackId,
       }, audioData.buffers);
     });
   }
