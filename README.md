@@ -33,18 +33,21 @@ downloads:
     - `floatingPoint: boolean = false`
 
 #### Class methods
-- `canProcess(format: object): string`
-- `encode(audioData: object, [format: object]): Promise<ArrayBuffer>`
-  - audioData
-    - `sampleRate: number`
-    - `channelData: Float32Array[]`
+- `encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>`
 
 #### Instance methods
-- `canProcess(format: object): string`
-- `encode(audioData: object, [format: object]): Promise<ArrayBuffer>`
-  - audioData
-    - `sampleRate: number`
-    - `channelData: Float32Array[]`
+- `encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>`
+
+##### Attributes
+
+[`AudioData`](https://github.com/mohayonao/audiodata) is defined below.
+
+```js
+interface AudioData {
+  sampleRate: number;
+  channelData: Float32Array[];
+}
+```
 
 ## Usage
 
@@ -62,12 +65,9 @@ var audioData = {
   ]
 };
 
-function arrayBufferToBuffer(buffer) {
-  return new Buffer(new Uint8Array(buffer));
-}
-
 WavDecoder.encode(audioData).then(function(buffer) {
-  fs.writeFileSync("foobar.wav", arrayBufferToBuffer(buffer));
+  // buffer is an instanceof Buffer
+  fs.writeFileSync("foobar.wav", buffer);
 });
 ```
 
@@ -91,6 +91,7 @@ function arrayBufferToBase64(buffer) {
 }
 
 WavEncoder.encode(audioData).then(function(buffer) {
+  // buffer is an instance of ArrayBuffer
   new Audio("data:audio/wav;base64," + arrayBufferToBase64(buffer)).play();
 });
 ```
