@@ -1,7 +1,7 @@
 import assert from "power-assert";
 import Encoder from "../src/Encoder";
 
-let expected = new Uint8Array([
+let expected = new Buffer([
   0x52, 0x49, 0x46, 0x46, // "RIFF"
   0x2c, 0x00, 0x00, 0x00, // file size
   0x57, 0x41, 0x56, 0x45, // "WAVE"
@@ -18,7 +18,7 @@ let expected = new Uint8Array([
 ]);
 
 describe("Encoder", function() {
-  describe(".encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", function() {
+  describe(".encode(audioData: AudioData, [format: object]): Promise<Buffer>", function() {
     it("works", function() {
       let audioData = {
         sampleRate: 44100,
@@ -29,13 +29,13 @@ describe("Encoder", function() {
       };
 
       return Encoder.encode(audioData, "wav").then((buffer) => {
-        let actual = new Uint8Array(buffer);
+        let actual = buffer;
 
         assert.deepEqual(actual, expected);
       });
     });
   });
-  describe("#encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>", function() {
+  describe("#encode(audioData: AudioData, [format: object]): Promise<Buffer>", function() {
     it("works", function() {
       let encoder = new Encoder();
 
@@ -48,7 +48,7 @@ describe("Encoder", function() {
       };
 
       return encoder.encode(audioData, "wav").then((buffer) => {
-        let actual = new Uint8Array(buffer);
+        let actual = buffer;
 
         assert.deepEqual(actual, expected);
       });

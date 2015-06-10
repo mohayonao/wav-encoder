@@ -1,29 +1,35 @@
+var dataview2 = require("dataview2");
+
 var self = {};
 
 function encoder() {
   self.onmessage = function(e) {
-    switch (e.data.type) {
-      case "encode":
-        self.encode(e.data.audioData, e.data.format).then(function(buffer) {
-          var data = {
-            type: "encoded",
-            callbackId: e.data.callbackId,
-            buffer: buffer,
-          };
-          self.postMessage(data, [ buffer ]);
-        }, function(err) {
-          var data = {
-            type: "error",
-            callbackId: e.data.callbackId,
-            message: err.message,
-          };
-          self.postMessage(data);
-        });
-        break;
+    if (e.data.type === "encode") {
+      self.encode(e.data.callbackId, e.data.audioData, e.data.format);
     }
   };
 
-  self.encode = function(audioData, format) {
+  self.encode = function(callbackId, audioData, format) {
+    function successCallback(buffer) {
+      self.postMessage({
+        type: "encoded",
+        callbackId: callbackId,
+        buffer: buffer,
+      }, [ buffer ]);
+    }
+
+    function errorCallback(err) {
+      self.postMessage({
+        type: "error",
+        callbackId: callbackId,
+        message: err.message,
+      });
+    }
+
+    self.encodeWav(audioData, format).then(successCallback, errorCallback);
+  };
+
+  self.encodeWav = function(audioData, format) {
     format.floatingPoint = !!format.floatingPoint;
     format.bitDepth = (format.bitDepth|0) || 16;
 
@@ -56,13 +62,18 @@ function encoder() {
 
       writer.writePCM(channelData, format);
 
-      resolve(writer.toArrayBuffer());
+      resolve(writer.buffer);
     });
   };
 
   function BufferWriter(length) {
-    this.buffer = new ArrayBuffer(length);
-    this.view = new DataView(this.buffer);
+    if (typeof dataview2 !== "undefined") {
+      this.buffer = new dataview2.Buffer2(length);
+      this.view = new dataview2.DataView2(this.buffer);
+    } else {
+      this.buffer = new ArrayBuffer(length);
+      this.view = new DataView(this.buffer);
+    }
     this.length = length;
     this.pos = 0;
   }
@@ -142,10 +153,6 @@ function encoder() {
         this[method](channelData[ch][i]);
       }
     }
-  };
-
-  BufferWriter.prototype.toArrayBuffer = function() {
-    return this.buffer;
   };
 
   self.BufferWriter = BufferWriter;
