@@ -1,3 +1,3 @@
-import Encoder from "./encoder";
+import Encoder from "./Encoder";
 
 export default Encoder;

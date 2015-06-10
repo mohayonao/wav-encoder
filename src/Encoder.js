@@ -1,18 +1,14 @@
-"use stirct";
-
 import InlineWorker from "inline-worker";
-import encoder from "./encoder-worker";
+import EncoderWorker from "./EncoderWorker";
+
+let instance = null;
 
 export default class Encoder {
-  static canProcess(format) {
-    if (format && (format === "wav" || format.type === "wav")) {
-      return "maybe";
-    }
-    return "";
-  }
-
   static encode(audioData, format) {
-    return new Encoder(format).encode(audioData);
+    if (instance === null) {
+      instance = new Encoder();
+    }
+    return instance.encode(audioData, format);
   }
 
   constructor(format = {}) {
@@ -20,25 +16,21 @@ export default class Encoder {
       floatingPoint: !!(format.floatingPoint),
       bitDepth: (format.bitDepth|0) || 16,
     };
-    this._worker = new InlineWorker(encoder, encoder.self);
-    this._worker.onmessage = (e) => {
-      let callback = this._callbacks[e.data.callbackId];
+    this._worker = new InlineWorker(EncoderWorker, EncoderWorker.self);
+    this._worker.onmessage = ({ data }) => {
+      let callback = this._callbacks[data.callbackId];
 
       if (callback) {
-        if (e.data.type === "encoded") {
-          callback.resolve(e.data.buffer);
+        if (data.type === "encoded") {
+          callback.resolve(data.buffer);
         } else {
-          callback.reject(new Error(e.data.message));
+          callback.reject(new Error(data.message));
         }
       }
 
-      this._callbacks[e.data.callbackId] = null;
+      this._callbacks[data.callbackId] = null;
     };
     this._callbacks = [];
-  }
-
-  canProcess(format) {
-    return Encoder.canProcess(format);
   }
 
   encode(audioData, format) {
@@ -58,7 +50,7 @@ export default class Encoder {
       audioData = { numberOfChannels, length, sampleRate, buffers };
 
       this._worker.postMessage({
-        type: "encode", audioData, format, callbackId
+        type: "encode", audioData, format, callbackId,
       }, audioData.buffers);
     });
   }
