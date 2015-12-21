@@ -1,7 +1,7 @@
 {
   "name": "wav-encoder",
   "description": "universal wav data encoder",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "author": "Nao Yonamine <mohayonao@gmail.com>",
   "bugs": {
     "url": "https://github.com/mohayonao/wav-encoder/issues"
