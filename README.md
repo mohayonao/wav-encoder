@@ -1,29 +1,15 @@
 # wav-encoder
 [![Build Status](http://img.shields.io/travis/mohayonao/wav-encoder.svg?style=flat-square)](https://travis-ci.org/mohayonao/wav-encoder)
 [![NPM Version](http://img.shields.io/npm/v/wav-encoder.svg?style=flat-square)](https://www.npmjs.org/package/wav-encoder)
-[![Bower](http://img.shields.io/bower/v/wav-encoder.svg?style=flat-square)](http://bower.io/search/?q=wav-encoder)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://mohayonao.mit-license.org/)
 
 > isomorphic wav data encoder
 
 ## Installation
 
-npm:
-
 ```
-npm install wav-encoder
+$ npm install wav-encoder
 ```
-
-bower:
-
-```
-bower install wav-encoder
-```
-
-downloads:
-
-- [wav-encoder.js](https://raw.githubusercontent.com/mohayonao/wav-encoder/master/build/wav-encoder.js)
-- [wav-encoder.min.js](https://raw.githubusercontent.com/mohayonao/wav-encoder/master/build/wav-encoder.min.js)
 
 ## API
 ### WavEncoder
@@ -39,8 +25,6 @@ downloads:
 - `encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>`
 
 ##### Attributes
-
-[`AudioData`](https://github.com/mohayonao/audiodata) is defined below.
 
 ```js
 interface AudioData {

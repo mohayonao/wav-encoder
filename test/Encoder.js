@@ -1,5 +1,7 @@
-import assert from "power-assert";
-import Encoder from "../src/Encoder";
+"use strict";
+
+const assert = require("assert");
+const Encoder = require("../lib/Encoder");
 
 let expected = new Buffer([
   0x52, 0x49, 0x46, 0x46, // "RIFF"
