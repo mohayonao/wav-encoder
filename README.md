@@ -3,7 +3,7 @@
 [![NPM Version](http://img.shields.io/npm/v/wav-encoder.svg?style=flat-square)](https://www.npmjs.org/package/wav-encoder)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://mohayonao.mit-license.org/)
 
-> isomorphic wav data encoder
+> promise-based wav encoder
 
 ## Installation
 
@@ -12,19 +12,11 @@ $ npm install wav-encoder
 ```
 
 ## API
-### WavEncoder
-- `constructor([format: object])`
-  - format
-    - `bitDepth: number = 16`
-    - `floatingPoint: boolean = false`
 
-#### Class methods
 - `encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>`
-
-#### Instance methods
-- `encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>`
-
-##### Attributes
+  - `audioData` should contain two fields `sampleRate` and `channelData`.
+  - `format` is an optional parameter which used to design the output wav format.
+    - The default format is `{ float: false, bitDepth: 16 }`
 
 ```js
 interface AudioData {
@@ -35,48 +27,20 @@ interface AudioData {
 
 ## Usage
 
-#### node.js
-
 ```js
-var fs = require("fs");
-var WavEncoder = require("wav-encoder");
+const fs = require("fs");
+const WavEncoder = require("wav-encoder");
 
-var audioData = {
+const whiteNoise1sec = {
   sampleRate: 44100,
   channelData: [
-    new Float32Array(100),
-    new Float32Array(100),
+    new Float32Array(44100).map(() => Math.random() - 0.5),
+    new Float32Array(44100).map(() => Math.random() - 0.5)
   ]
 };
 
-WavDecoder.encode(audioData).then(function(buffer) {
-  // buffer is an instanceof Buffer
-  fs.writeFileSync("foobar.wav", buffer);
-});
-```
-
-#### browser
-
-```html
-<script src="/path/to/wav-encoder.js"></script>
-```
-
-```js
-var audioData = {
-  sampleRate: 44100,
-  channelData: [
-    new Float32Array(100),
-    new Float32Array(100),
-  ]
-};
-
-function arrayBufferToBase64(buffer) {
-  return btoa([].slice.call(new Uint8Array(buffer)).map(String.fromCharCode).join(""));
-}
-
-WavEncoder.encode(audioData).then(function(buffer) {
-  // buffer is an instance of ArrayBuffer
-  new Audio("data:audio/wav;base64," + arrayBufferToBase64(buffer)).play();
+WavEncoder.encode(whiteNoise1sec).then((buffer) => {
+  fs.writeFileSync("noise.wav", new Buffer(buffer));
 });
 ```
 
