@@ -1,7 +1,7 @@
 {
   "name": "wav-encoder",
   "description": "promise-based wav encoder",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Nao Yonamine <mohayonao@gmail.com>",
   "bugs": {
     "url": "https://github.com/mohayonao/wav-encoder/issues"
