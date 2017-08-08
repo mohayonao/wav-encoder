@@ -36,18 +36,15 @@ function readAudioData(filename) {
   };
 }
 
-describe("encode(audioData, opts)", () => {
+describe("encode.sync(audioData, opts)", () => {
   const audioData = readAudioData("amen.dat");
 
   testSpec.forEach(({ opts, delta, filename }) => {
     it(filename, () => {
-      const expected = new Uint8Array(encoder.encode.sync(audioData, opts));
+      const expected = new Uint8Array(readFile(filename));
+      const actual = new Uint8Array(encoder.encode.sync(audioData, opts));
 
-      return encoder.encode(audioData, opts).then((actual) => {
-        actual = new Uint8Array(actual);
-
-        assert.deepEqual(actual, expected);
-      });
+      assert.deepEqual(actual, expected);
     });
   });
 });

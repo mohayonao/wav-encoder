@@ -1,39 +1,43 @@
 "use strict";
 
-function encode(audioData, opts) {
+function encodeSync(audioData, opts) {
   opts = opts || {};
 
-  return new Promise(function(resolve, reject) {
-    audioData = toAudioData(audioData);
+  audioData = toAudioData(audioData);
 
-    if (audioData === null) {
-      return reject(new TypeError("Invalid AudioData"));
-    }
+  if (audioData === null) {
+    throw new TypeError("Invalid AudioData");
+  }
 
-    var floatingPoint = !!(opts.floatingPoint || opts.float);
-    var bitDepth = floatingPoint ? 32 : ((opts.bitDepth|0) || 16);
-    var bytes = bitDepth >> 3;
-    var length = audioData.length * audioData.numberOfChannels * bytes;
-    var dataView = new DataView(new Uint8Array(44 + length).buffer);
-    var writer = createWriter(dataView);
+  var floatingPoint = !!(opts.floatingPoint || opts.float);
+  var bitDepth = floatingPoint ? 32 : ((opts.bitDepth|0) || 16);
+  var bytes = bitDepth >> 3;
+  var length = audioData.length * audioData.numberOfChannels * bytes;
+  var dataView = new DataView(new Uint8Array(44 + length).buffer);
+  var writer = createWriter(dataView);
 
-    var format = {
-      formatId: floatingPoint ? 0x0003 : 0x0001,
-      floatingPoint: floatingPoint,
-      numberOfChannels: audioData.numberOfChannels,
-      sampleRate: audioData.sampleRate,
-      bitDepth: bitDepth
-    };
+  var format = {
+    formatId: floatingPoint ? 0x0003 : 0x0001,
+    floatingPoint: floatingPoint,
+    numberOfChannels: audioData.numberOfChannels,
+    sampleRate: audioData.sampleRate,
+    bitDepth: bitDepth
+  };
 
-    writeHeader(writer, format, dataView.buffer.byteLength - 8);
+  writeHeader(writer, format, dataView.buffer.byteLength - 8);
 
-    var err = writeData(writer, format, length, audioData);
+  var err = writeData(writer, format, length, audioData);
 
-    if (err instanceof Error) {
-      return reject(err);
-    }
+  if (err instanceof Error) {
+    throw err;
+  }
 
-    resolve(dataView.buffer);
+  return dataView.buffer;
+}
+
+function encode(audioData, opts) {
+  return new Promise(function(resolve) {
+    resolve(encodeSync(audioData, opts));
   });
 }
 
@@ -122,19 +126,21 @@ function createWriter(dataView) {
     pcm8: function(value) {
       value = Math.max(-1, Math.min(value, +1));
       value = (value * 0.5 + 0.5) * 255;
-      dataView.setUint8(pos, value|0, true);
+      value = Math.round(value)|0;
+      dataView.setUint8(pos, value, true);
       pos += 1;
     },
     pcm16: function(value) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 32768 : value * 32767;
-      dataView.setInt16(pos, value|0, true);
+      value = Math.round(value)|0;
+      dataView.setInt16(pos, value, true);
       pos += 2;
     },
     pcm24: function(value) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? 0x1000000 + value * 8388608 : value * 8388607;
-      value = value|0;
+      value = Math.round(value)|0;
 
       var x0 = (value >>  0) & 0xFF;
       var x1 = (value >>  8) & 0xFF;
@@ -148,7 +154,8 @@ function createWriter(dataView) {
     pcm32: function(value) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 2147483648 : value * 2147483647;
-      dataView.setInt32(pos, value|0, true);
+      value = Math.round(value)|0;
+      dataView.setInt32(pos, value, true);
       pos += 4;
     },
     pcm32f: function(value) {
@@ -159,3 +166,4 @@ function createWriter(dataView) {
 }
 
 module.exports.encode = encode;
+module.exports.encode.sync = encodeSync;
