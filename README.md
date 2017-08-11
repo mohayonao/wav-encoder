@@ -13,11 +13,14 @@ $ npm install wav-encoder
 
 ## API
 
-- `encode(audioData: AudioData, [format: object]): Promise<ArrayBuffer>`
+- `encode(audioData: AudioData, [opts: object]): Promise<ArrayBuffer>`
   - `audioData` should contain two fields `sampleRate` and `channelData`.
-  - `format` is an optional parameter which used to design the output wav format.
+  - `opts` is an optional parameter which used to design the output wav format.
+    - `opts.bitDepth` the number of bits of information in each sample
+    - `opts.float` encode to float values
+    - `opts.symmetric` encode to symmetrical values (see [#10](https://github.com/mohayonao/wav-encoder/issues/10))
     - The default format is `{ float: false, bitDepth: 16 }`
-- `encode.sync(audioData: AudioData, [format: object]): ArrayBuffer`
+- `encode.sync(audioData: AudioData, [opts: object]): ArrayBuffer`
   - synchronous version
 
 ```js
