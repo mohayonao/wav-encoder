@@ -26,7 +26,7 @@ function encodeSync(audioData, opts) {
 
   writeHeader(writer, format, dataView.buffer.byteLength - 8);
 
-  var err = writeData(writer, format, length, audioData);
+  var err = writeData(writer, format, length, audioData, opts);
 
   if (err instanceof Error) {
     throw err;
@@ -79,10 +79,10 @@ function writeHeader(writer, format, length) {
   writer.uint16(format.bitDepth);
 }
 
-function writeData(writer, format, length, audioData) {
+function writeData(writer, format, length, audioData, opts) {
   var bitDepth = format.bitDepth;
-  var floatingPoint = format.floatingPoint ? "f" : "";
-  var methodName = "pcm" + bitDepth + floatingPoint;
+  var encoderOption = format.floatingPoint ? "f" : opts.symmetric ? "s" : "";
+  var methodName = "pcm" + bitDepth + encoderOption;
 
   if (!writer[methodName]) {
     return new TypeError("Not supported bit depth: " + bitDepth);
@@ -130,10 +130,22 @@ function createWriter(dataView) {
       dataView.setUint8(pos, value, true);
       pos += 1;
     },
+    pcm8s: function(value) {
+      value = Math.round(value * 128) + 128;
+      value = Math.max(0, Math.min(value, 255));
+      dataView.setUint8(pos, value, true);
+      pos += 1;
+    },
     pcm16: function(value) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 32768 : value * 32767;
       value = Math.round(value)|0;
+      dataView.setInt16(pos, value, true);
+      pos += 2;
+    },
+    pcm16s: function(value) {
+      value = Math.round(value * 32768);
+      value = Math.max(-32768, Math.min(value, 32767));
       dataView.setInt16(pos, value, true);
       pos += 2;
     },
@@ -151,10 +163,29 @@ function createWriter(dataView) {
       dataView.setUint8(pos + 2, x2);
       pos += 3;
     },
+    pcm24s: function(value) {
+      value = Math.round(value * 8388608);
+      value = Math.max(-8388608, Math.min(value, 8388607));
+
+      var x0 = (value >>  0) & 0xFF;
+      var x1 = (value >>  8) & 0xFF;
+      var x2 = (value >> 16) & 0xFF;
+
+      dataView.setUint8(pos + 0, x0);
+      dataView.setUint8(pos + 1, x1);
+      dataView.setUint8(pos + 2, x2);
+      pos += 3;
+    },
     pcm32: function(value) {
       value = Math.max(-1, Math.min(value, +1));
       value = value < 0 ? value * 2147483648 : value * 2147483647;
       value = Math.round(value)|0;
+      dataView.setInt32(pos, value, true);
+      pos += 4;
+    },
+    pcm32s: function(value) {
+      value = Math.round(value * 2147483648);
+      value = Math.max(-2147483648, Math.min(value, +2147483647));
       dataView.setInt32(pos, value, true);
       pos += 4;
     },
